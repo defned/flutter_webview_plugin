@@ -128,8 +128,9 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
      completionHandler:(void (^_Nullable)(NSData * response))completionHandler {
     if (self.webview != nil) {
         UIGraphicsBeginImageContextWithOptions(self.viewController.view.bounds.size,
-                                        YES, self.contentScaleFactor);
-        [self drawViewHierarchyInRect:self.viewController.view.bounds afterScreenUpdates:YES];
+                                        YES, self.viewController.view.contentScaleFactor);
+        //[self drawViewHierarchyInRect:self.viewController.view.bounds afterScreenUpdates:YES];
+        [self.viewController.view.layer renderInContext:UIGraphicsGetCurrentContext()];
         UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
 
