@@ -147,6 +147,12 @@ class FlutterWebviewPlugin {
     };
     await _channel.invokeMethod('resize', args);
   }
+
+  /// resize webview
+  Future<RawImage> snapshot() async {
+    final ByteData res = await _channel.invokeMethod('snapshot');
+    return new RawImage(image:await decodeImageFromList(res.buffer.asUint8List()));
+  }
 }
 
 class WebViewStateChanged {

@@ -46,6 +46,10 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     } else if ([@"resize" isEqualToString:call.method]) {
         [self resize:call];
         result(nil);
+    } else if ([@"snapshot" isEqualToString:call.method]) {
+        [self snapshot:call completionHandler:^(NSData* response) {
+            result(response);
+        }];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -115,6 +119,25 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
                        completionHandler:^(id _Nullable response, NSError * _Nullable error) {
             completionHandler([NSString stringWithFormat:@"%@", response]);
         }];
+    } else {
+        completionHandler(nil);
+    }
+}
+
+- (void)snapshot:(FlutterMethodCall*)call
+     completionHandler:(void (^_Nullable)(NSData * response))completionHandler {
+    if (self.webview != nil) {
+        UIGraphicsBeginImageContextWithOptions(self.viewController.view.bounds.size,
+                                        YES, self.contentScaleFactor);
+        [self drawViewHierarchyInRect:self.viewController.view.bounds afterScreenUpdates:YES];
+        UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        //CGDataProviderRef provider = CGImageGetDataProvider(newImage.CGImage);
+        //NSData* data = (id)CFBridgingRelease(CGDataProviderCopyData(provider));
+        NSData *data = UIImageJPEGRepresentation(newImage, 0.9);
+
+        completionHandler(data);
     } else {
         completionHandler(nil);
     }
