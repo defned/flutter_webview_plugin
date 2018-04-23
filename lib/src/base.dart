@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -150,8 +151,9 @@ class FlutterWebviewPlugin {
 
   /// resize webview
   Future<RawImage> snapshot() async {
-    final ByteData res = await _channel.invokeMethod('snapshot');
-    return new RawImage(image:await decodeImageFromList(res.buffer.asUint8List()));
+    final Uint8List res = await _channel.invokeMethod('snapshot');
+print(res.runtimeType);
+    return res != null ? new RawImage(image:await decodeImageFromList(res)) : null;
   }
 }
 

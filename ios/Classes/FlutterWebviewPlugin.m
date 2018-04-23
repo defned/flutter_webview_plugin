@@ -47,7 +47,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         [self resize:call];
         result(nil);
     } else if ([@"snapshot" isEqualToString:call.method]) {
-        [self snapshot:call completionHandler:^(NSData* response) {
+        [self snapshot:call completionHandler:^(FlutterStandardTypedData* response) {
             result(response);
         }];
     } else {
@@ -125,7 +125,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
 }
 
 - (void)snapshot:(FlutterMethodCall*)call
-     completionHandler:(void (^_Nullable)(NSData * response))completionHandler {
+     completionHandler:(void (^_Nullable)(FlutterStandardTypedData* response))completionHandler {
     if (self.webview != nil) {
         UIGraphicsBeginImageContextWithOptions(self.viewController.view.bounds.size,
                                         YES, self.viewController.view.contentScaleFactor);
@@ -138,7 +138,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         //NSData* data = (id)CFBridgingRelease(CGDataProviderCopyData(provider));
         NSData *data = UIImageJPEGRepresentation(newImage, 0.9);
 
-        completionHandler(data);
+        completionHandler([FlutterStandardTypedData typedDataWithBytes:data]);
     } else {
         completionHandler(nil);
     }
